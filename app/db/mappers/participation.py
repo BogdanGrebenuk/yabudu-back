@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, and_
 
 from app.db.models import User
 from app.utils.mapper import Mapper
@@ -11,8 +11,8 @@ class ParticipationMapper(Mapper):
             result = await (
                 await conn.execute(
                     select([
-                        self.model.role,
-                        self.model.type,
+                        self.model.c.role,
+                        self.model.c.type,
                         User.c.id,
                         User.c.username,
                         User.c.email,
@@ -20,7 +20,7 @@ class ParticipationMapper(Mapper):
                         User.c.interests
                     ])
                     .select_from(self.model.join(User, self.model.c.user_id == User.c.id))
-                    .where(self.model.c.event_id == event.id, self.model.c.role == True)
+                    .where(and_(self.model.c.event_id == event.id, self.model.c.role == True))
                 )
             ).fetchone()
             return result
@@ -35,11 +35,11 @@ class ParticipationMapper(Mapper):
                         User.c.email,
                         User.c.inst_username,
                         User.c.interests,
-                        self.model.role,
-                        self.model.type
+                        self.model.c.role,
+                        self.model.c.type
                     ])
                         .select_from(self.model.join(User, self.model.c.user_id == User.c.id))
-                        .where(self.model.c.event_id == event.id, self.model.c.role == False)
+                        .where(and_(self.model.c.event_id == event.id, self.model.c.role == False))
                 )
             ).fetchall()
             return result
