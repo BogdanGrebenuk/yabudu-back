@@ -6,6 +6,7 @@ from dependency_injector.ext import aiohttp as ext_aiohttp
 from app.auth.containers import AuthPackageContainer
 from app.db import models
 from app.db.mappers.user import UserMapper
+from app.event.containers import EventPackageContainer
 from app.middlewares import error_handler, create_jwt_middleware, request_logger, additional_token_checker
 from app.user.containers import UserPackageContainer
 from app.user.domain import User
@@ -128,4 +129,9 @@ class ApplicationContainer(containers.DeclarativeContainer):
         application_utils=application_utils,
         mappers=mappers,
         config=config
+    )
+
+    event = providers.Container(
+        EventPackageContainer,
+        config=config,
     )
