@@ -9,4 +9,5 @@ class UserTransformer(Transformer):
             "id": user.id,
             "username": user.username,
             "email": user.email,
+            "instUsername": user.inst_username
         }

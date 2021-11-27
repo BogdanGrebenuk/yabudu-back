@@ -7,6 +7,7 @@ class CreateUserDto:
     username: str
     email: str
     password: str
+    inst_username: str
 
 
 @dataclass
