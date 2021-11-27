@@ -28,8 +28,12 @@ async def post_message(
 
     await message_mapper.create(message)
 
+    messages = await message_mapper.find_by(event_id=event.id)
+
+    messages.sort(key=lambda m: m.created_at)
+
     return web.json_response(
-        await message_transformer.transform(message),
+        await message_transformer.transform_many(messages),
         status=201
     )
 
