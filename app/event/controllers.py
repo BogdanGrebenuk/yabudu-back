@@ -19,8 +19,8 @@ async def create_event(request, event_mapper, participation_mapper, event_transf
         id=str(uuid.uuid4()),
         name=body.get('name'),
         description=body.get('description'),
-        start_at=datetime.fromtimestamp(body.get('start_at')),
-        end_at=datetime.fromtimestamp(body.get('end_at')),
+        start_at=datetime.utcfromtimestamp(body.get('start_at')),
+        end_at=datetime.utcfromtimestamp(body.get('end_at')),
         x=body.get('x'),
         y=body.get('y'),
         address=body.get('address'),
@@ -68,7 +68,7 @@ async def get_all_events(request, event_mapper, event_transformer):
     events_without_user_participation_that_not_finished_yet = [
         event
         for event in events
-        if event.id not in user_events_ids and event.end_at < datetime.now().timestamp()
+        if event.id not in user_events_ids and datetime.utcnow().timestamp() < event.end_at.timestamp()
     ]
 
     return web.json_response(

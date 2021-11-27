@@ -23,7 +23,7 @@ async def post_message(
         text=body.get('text'),
         event_id=event.id,
         user_id=user.id,
-        created_at=datetime.datetime.now()
+        created_at=datetime.datetime.utcnow()
     )
 
     await message_mapper.create(message)
