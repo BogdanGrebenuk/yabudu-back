@@ -10,6 +10,7 @@ class User(Entity):
     username: str
     email: str
     inst_username: str
+    interests: list
     password: str
     token: str = None
 

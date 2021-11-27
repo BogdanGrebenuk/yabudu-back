@@ -33,6 +33,7 @@ async def register_user(
             password=body.get('password'),
             username=body.get('username'),
             inst_username=body.get('inst_username'),
+            interests=body.get('interests'),
         )
     )
 

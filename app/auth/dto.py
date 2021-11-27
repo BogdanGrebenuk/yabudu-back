@@ -8,6 +8,7 @@ class CreateUserDto:
     email: str
     password: str
     inst_username: str
+    interests: list
 
 
 @dataclass

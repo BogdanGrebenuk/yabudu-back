@@ -35,7 +35,8 @@ class Registrar:
             username=user_dto.username,
             email=user_dto.email,
             password=hashed_password,
-            inst_username=user_dto.inst_username
+            inst_username=user_dto.inst_username,
+            interests=user_dto.interests,
         )
 
         return user
