@@ -4,8 +4,11 @@ from dependency_injector import containers, providers
 from dependency_injector.ext import aiohttp as ext_aiohttp
 
 from app.auth.containers import AuthPackageContainer
+from app.chat.containers import ChatPackageContainer
+from app.chat.domain import Message
 from app.db import models
 from app.db.mappers.event import EventMapper
+from app.db.mappers.message import MessageMapper
 from app.db.mappers.participation import ParticipationMapper
 from app.db.mappers.user import UserMapper
 from app.event.containers import EventPackageContainer
@@ -81,6 +84,13 @@ class MappersContainer(containers.DeclarativeContainer):
         entity_cls=Participation
     )
 
+    message_mapper = providers.Singleton(
+        MessageMapper,
+        engine=gateways.engine,
+        model=models.Message,
+        entity_cls=Message
+    )
+
 
 class MiddlewareContainer(containers.DeclarativeContainer):
 
@@ -152,5 +162,10 @@ class ApplicationContainer(containers.DeclarativeContainer):
     event = providers.Container(
         EventPackageContainer,
         config=config,
+        mappers=mappers
+    )
+
+    chat = providers.Container(
+        ChatPackageContainer,
         mappers=mappers
     )
