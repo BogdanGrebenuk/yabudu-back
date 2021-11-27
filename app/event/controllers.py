@@ -40,3 +40,12 @@ async def create_event(request, event_mapper, participation_mapper, event_transf
     await participation_mapper.create(participation)
 
     return web.json_response(await event_transformer.transform(event))
+
+
+async def get_event(request, event_mapper, event_transformer):
+    event_id = request.match_info.get('event_id')
+    event = await event_mapper.find(
+        id=event_id
+    )
+
+    return web.json_response(await event_transformer.transform(event))
