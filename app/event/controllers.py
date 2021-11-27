@@ -49,3 +49,24 @@ async def get_event(request, event_mapper, event_transformer):
     )
 
     return web.json_response(await event_transformer.transform(event))
+
+async def join_to_event(request, event_mapper, participation_mapper, event_transformer):
+    user = request['user']
+    body = await request.json()
+    event_id = request.match_info.get('event_id')
+
+    participation = Participation(
+        id=str(uuid.uuid4()),
+        user_id=user.id,
+        event_id=event_id,
+        type=body.get('type'),
+        role=False,
+    )
+
+    event = await event_mapper.find(
+        id=event_id
+    )
+
+    await participation_mapper.create(participation)
+
+    return web.json_response(await event_transformer.transform(event))
