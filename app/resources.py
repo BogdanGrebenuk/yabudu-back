@@ -31,3 +31,9 @@ def setup_routes(app):
     app.router.add_route(
         'POST', '/api/events/{event_id}/join', container.event.join_to_event.as_view()
     )
+    app.router.add_route(
+        'GET', '/api/my-events', container.event.get_my_events.as_view()
+    )
+    app.router.add_route(
+        'GET', '/api/events', container.event.get_all_events.as_view()
+    )

@@ -39,16 +39,32 @@ async def create_event(request, event_mapper, participation_mapper, event_transf
 
     await participation_mapper.create(participation)
 
-    return web.json_response(await event_transformer.transform(event))
+    return web.json_response(await event_transformer.transform_with_user_info(event, user))
 
 
 async def get_event(request, event_mapper, event_transformer):
+    user = request['user']
     event_id = request.match_info.get('event_id')
     event = await event_mapper.find(
         id=event_id
     )
 
-    return web.json_response(await event_transformer.transform(event))
+    return web.json_response(await event_transformer.transform_with_user_info(event, user))
+
+
+async def get_my_events(request, event_mapper, event_transformer):
+    user = request['user']
+
+    events = await event_mapper.find_events_with_user_participation(user)
+
+    return web.json_response(await event_transformer.transform_many_with_user_info(events, user))
+
+
+async def get_all_events(request, event_mapper, event_transformer):
+    events = await event_mapper.find_all()
+
+    return web.json_response(await event_transformer.transform_many_without_user_info(events))
+
 
 async def join_to_event(request, event_mapper, participation_mapper, event_transformer):
     user = request['user']
@@ -69,4 +85,4 @@ async def join_to_event(request, event_mapper, participation_mapper, event_trans
 
     await participation_mapper.create(participation)
 
-    return web.json_response(await event_transformer.transform(event))
+    return web.json_response(await event_transformer.transform_with_user_info(event, user))

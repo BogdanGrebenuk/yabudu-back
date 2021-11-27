@@ -3,15 +3,49 @@ from app.utils.transformer import Transformer
 
 class EventTransformer(Transformer):
 
-    async def transform(self, event):
-        return {
+    def __init__(self, participation_mapper):
+        self.participation_mapper = participation_mapper
+
+    async def transform(self, data):
+        return data
+
+    async def transform_with_user_info(self, event, user):
+        participation = await self.participation_mapper.find_one_by(event_id=event.id, user_id=user.id)
+        return await self.transform({
             "id": event.id,
             "name": event.name,
-            "description": event.description,
-            "start_at": event.start_at.timestamp(),
-            "end_at": event.end_at.timestamp(),
+            "description": event.name,
+            "startAt": event.start_at.timestamp(),
+            "endAt": event.end_at.timestamp(),
             "x": event.x,
             "y": event.y,
             "address": event.address,
             "interests": event.interests,
-        }
+            "isCreator": participation.role,
+            "exposeMyData": participation.type
+        })
+
+    async def transform_many_with_user_info(self, events, user):
+        return await gather(*[
+            self.transform_with_user_info(event, user)
+            for event in events
+        ])
+
+    async def transform_without_user_info(self, event):
+        return await self.transform({
+            "id": event.id,
+            "name": event.name,
+            "description": event.name,
+            "startAt": event.start_at.timestamp(),
+            "endAt": event.end_at.timestamp(),
+            "x": event.x,
+            "y": event.y,
+            "address": event.address,
+            "interests": event.interests,
+        })
+
+    async def transform_many_without_user_info(self, events):
+        return await gather(*[
+            self.transform_without_user_info(event)
+            for event in events
+        ])
