@@ -65,13 +65,17 @@ async def get_all_events(request, event_mapper, event_transformer):
     events = await event_mapper.find_all()
     user_events_ids = [event.id for event in await event_mapper.find_events_with_user_participation(user)]
 
-    events_without_user_participation = [
+    events_without_user_participation_that_not_finished_yet = [
         event
         for event in events
-        if event.id not in user_events_ids
+        if event.id not in user_events_ids and event.end_at < datetime.now().timestamp()
     ]
 
-    return web.json_response(await event_transformer.transform_many_without_user_info(events_without_user_participation))
+    return web.json_response(
+        await event_transformer.transform_many_without_user_info(
+            events_without_user_participation_that_not_finished_yet
+        )
+    )
 
 
 async def join_to_event(request, event_mapper, participation_mapper, event_transformer):
