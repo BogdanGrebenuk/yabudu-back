@@ -48,6 +48,15 @@ class EventTransformer(Transformer):
             "image": event.image
         })
 
+    async def transform_feedback(self, feedback):
+        return await self.transform({
+            "id": feedback.id,
+            "user_id": feedback.user_id,
+            "event_id": feedback.event_id,
+            "text": feedback.text,
+            "image": feedback.image,
+        })
+
     async def transform_many_without_user_info(self, events):
         return await gather(*[
             self.transform_without_user_info(event)

@@ -8,6 +8,7 @@ from app.chat.containers import ChatPackageContainer
 from app.chat.domain import Message
 from app.db import models
 from app.db.mappers.event import EventMapper
+from app.db.mappers.feedback import FeedbackMapper
 from app.db.mappers.message import MessageMapper
 from app.db.mappers.participation import ParticipationMapper
 from app.db.mappers.user import UserMapper
@@ -15,7 +16,7 @@ from app.event.containers import EventPackageContainer
 from app.middlewares import error_handler, create_jwt_middleware, request_logger, additional_token_checker
 from app.user.containers import UserPackageContainer
 from app.user.domain import User
-from app.event.domain import Event
+from app.event.domain import Event, Feedback
 from app.event.domain import Participation
 from app.utils.engine import init_engine
 from app.utils.executor import (
@@ -89,6 +90,13 @@ class MappersContainer(containers.DeclarativeContainer):
         engine=gateways.engine,
         model=models.Message,
         entity_cls=Message
+    )
+
+    feedback_mapper = providers.Singleton(
+        FeedbackMapper,
+        engine=gateways.engine,
+        model=models.Feedback,
+        entity_cls=Feedback
     )
 
 

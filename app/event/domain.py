@@ -25,3 +25,13 @@ class Participation(Entity):
     event_id: str
     type: bool
     role: bool
+
+
+@dataclass
+class Feedback(Entity):
+    id: str
+    user_id: str
+    event_id: str
+    text: str
+    image: str
+

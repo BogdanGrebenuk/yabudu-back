@@ -49,3 +49,13 @@ Message = sa.Table(
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('text', sa.Text, nullable=False),
 )
+
+Feedback = sa.Table(
+    'feedback',
+    metadata,
+    sa.Column('id', sa.Text, primary_key=True),
+    sa.Column('event_id', sa.Text, sa.ForeignKey('event.id'), nullable=False),
+    sa.Column('user_id', sa.Text, sa.ForeignKey('user.id'), nullable=False),
+    sa.Column('image', sa.Text(), nullable=True),
+    sa.Column('text', sa.Text, nullable=True),
+)

@@ -3,7 +3,8 @@ from datetime import datetime
 
 from aiohttp import web
 
-from app.event.domain import Event, Participation
+from app.event.domain import Event, Participation, Feedback
+from app.exceptions.application import DomainException
 
 
 async def get_global_events(request, global_events_finder):
@@ -107,3 +108,27 @@ async def join_to_event(request, event_mapper, participation_mapper, event_trans
     event_info = await event_info_generator.generate(event)
 
     return web.json_response(await event_transformer.transform(event_info))
+
+async def create_feedback(request, feedback_mapper, event_transformer):
+    user = request['user']
+    event_id = request.match_info.get('event_id')
+    body = await request.json()
+
+    if body.get('text') is None and body.get('image') is None:
+        raise DomainException(
+            f"Text or image must not be null"
+        )
+
+    feedback = Feedback(
+        id=str(uuid.uuid4()),
+        user_id=user.id,
+        event_id=event_id,
+        text=body.get('text'),
+        image=body.get('image'),
+    )
+
+    await feedback_mapper.create(feedback)
+
+    return web.json_response(
+        await event_transformer.transform_feedback(feedback)
+    )

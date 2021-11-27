@@ -37,3 +37,6 @@ def setup_routes(app):
     app.router.add_route(
         'GET', '/api/events', container.event.get_all_events.as_view()
     )
+    app.router.add_route(
+        'POST', '/api/events/{event_id}/feedback', container.event.create_feedback.as_view()
+    )
