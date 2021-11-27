@@ -24,7 +24,8 @@ class EventTransformer(Transformer):
             "address": event.address,
             "interests": event.interests,
             "isCreator": participation.role,
-            "exposeMyData": participation.type
+            "exposeMyData": participation.type,
+            "image": event.image
         })
 
     async def transform_many_with_user_info(self, events, user):
@@ -44,6 +45,7 @@ class EventTransformer(Transformer):
             "y": event.y,
             "address": event.address,
             "interests": event.interests,
+            "image": event.image
         })
 
     async def transform_many_without_user_info(self, events):

@@ -61,6 +61,7 @@ class EventInfoGenerator:
             "y": event.y,
             "address": event.address,
             "interests": event.interests,
+            "image": event.image,
             "organizer": {
                 "id": organizer_info.id,
                 "username": organizer_info.username,

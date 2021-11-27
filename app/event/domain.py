@@ -15,6 +15,7 @@ class Event(Entity):
     interests: list
     x: float
     y: float
+    image: str
 
 
 @dataclass

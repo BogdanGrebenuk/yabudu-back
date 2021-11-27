@@ -24,7 +24,8 @@ async def create_event(request, event_mapper, participation_mapper, event_transf
         x=body.get('x'),
         y=body.get('y'),
         address=body.get('address'),
-        interests=body.get('interests')
+        interests=body.get('interests'),
+        image=body.get('image')
     )
 
     await event_mapper.create(event)

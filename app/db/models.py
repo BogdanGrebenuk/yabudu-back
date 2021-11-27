@@ -36,7 +36,8 @@ Event = sa.Table(
     sa.Column('x', sa.Float(), nullable=True),
     sa.Column('y', sa.Float(), nullable=True),
     sa.Column('address', sa.Text(), nullable=False),
-    sa.Column('interests', sa.JSON(), nullable=False)
+    sa.Column('interests', sa.JSON(), nullable=False),
+    sa.Column('image', sa.Text(), nullable=True)
 )
 
 Message = sa.Table(
