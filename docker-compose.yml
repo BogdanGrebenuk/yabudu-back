@@ -1,0 +1,30 @@
+version: "3.2"
+
+services:
+
+  db:
+    container_name: db
+    image: postgres:14.1
+    volumes:
+      - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
+      - "dbdata:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=able
+      - POSTGRES_DB=brain_game
+    ports:
+      - "5432:5432"
+
+  web:
+    container_name: web
+    build: .
+    volumes:
+      - ./:/app
+    command: python -m app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  dbdata:
