@@ -1,3 +1,5 @@
+from asyncio import gather
+
 import aiohttp
 
 
@@ -38,3 +40,50 @@ class GlobalEventsFinder:
             })
 
         return temp
+
+
+class EventInfoGenerator:
+
+    def __init__(self, participation_mapper):
+        self.participation_mapper = participation_mapper
+
+    def generate(self, event):
+        organizer_info = await self.participation_mapper.get_event_organizer(event)
+        other_participators_info = await self.participation_mapper.find_event_members(event)
+
+        return {
+            "id": event.id,
+            "name": event.name,
+            "description": event.name,
+            "startAt": event.start_at.timestamp(),
+            "endAt": event.end_at.timestamp(),
+            "x": event.x,
+            "y": event.y,
+            "address": event.address,
+            "interests": event.interests,
+            "organizer": {
+                "id": organizer_info.id,
+                "username": organizer_info.username,
+                "email": organizer_info.email,
+                "instUsername": organizer_info.inst_username,
+                "isOrganizer": organizer_info.role,
+                "exposeMyData": organizer_info.type
+            },
+            "members": [
+                {
+                    "id": member.id,
+                    "username": member.username,
+                    "email": member.email,
+                    "instUsername": member.inst_username,
+                    "isOrganizer": member.role,
+                    "exposeMyData": member.type
+                }
+                for member in other_participators_info
+            ]
+        }
+
+    def generate_many(self, events):
+        return await gather(*[
+            self.generate(event)
+            for event in events
+        ])

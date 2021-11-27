@@ -2,7 +2,7 @@ from dependency_injector import containers, providers
 from dependency_injector.ext import aiohttp as ext_aiohttp
 
 from app.event.controllers import get_global_events, create_event, get_event, join_to_event, get_my_events, get_all_events
-from app.event.service import GlobalEventsFinder
+from app.event.service import GlobalEventsFinder, EventInfoGenerator
 from app.event.transformers import EventTransformer
 
 
@@ -25,6 +25,11 @@ class EventPackageContainer(containers.DeclarativeContainer):
         tm_api_key=config.tm.api_key
     )
 
+    event_info_generator = providers.Factory(
+        EventInfoGenerator,
+        participation_mapper=mappers.participation_mapper
+    )
+
     # controllers
 
     get_global_events = ext_aiohttp.View(
@@ -37,12 +42,14 @@ class EventPackageContainer(containers.DeclarativeContainer):
         event_mapper=mappers.event_mapper,
         participation_mapper=mappers.participation_mapper,
         event_transformer=event_transformer,
+        event_info_generator=event_info_generator
     )
 
     get_event_by_id = ext_aiohttp.View(
         get_event,
         event_mapper=mappers.event_mapper,
         event_transformer=event_transformer,
+        event_info_generator=event_info_generator
     )
 
     join_to_event = ext_aiohttp.View(
@@ -50,16 +57,19 @@ class EventPackageContainer(containers.DeclarativeContainer):
         event_mapper=mappers.event_mapper,
         participation_mapper=mappers.participation_mapper,
         event_transformer=event_transformer,
+        event_info_generator=event_info_generator
     )
 
     get_my_events = ext_aiohttp.View(
         get_my_events,
         event_transformer=event_transformer,
         event_mapper=mappers.event_mapper,
+        event_info_generator=event_info_generator
     )
 
     get_all_events = ext_aiohttp.View(
         get_all_events,
         event_transformer=event_transformer,
         event_mapper=mappers.event_mapper,
+        event_info_generator=event_info_generator
     )

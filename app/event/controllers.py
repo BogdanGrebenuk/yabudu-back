@@ -11,7 +11,7 @@ async def get_global_events(request, global_events_finder):
     return web.json_response(global_events, status=200)
 
 
-async def create_event(request, event_mapper, participation_mapper, event_transformer):
+async def create_event(request, event_mapper, participation_mapper, event_transformer, event_info_generator):
     body = await request.json()
     user = request['user']
 
@@ -39,28 +39,34 @@ async def create_event(request, event_mapper, participation_mapper, event_transf
 
     await participation_mapper.create(participation)
 
-    return web.json_response(await event_transformer.transform_with_user_info(event, user))
+    event_info = await event_info_generator.generate(event)
+
+    return web.json_response(await event_transformer.transform(event_info))
 
 
-async def get_event(request, event_mapper, event_transformer):
+async def get_event(request, event_mapper, event_transformer, event_info_generator):
     user = request['user']
     event_id = request.match_info.get('event_id')
     event = await event_mapper.find(
         id=event_id
     )
 
-    return web.json_response(await event_transformer.transform_with_user_info(event, user))
+    event_info = await event_info_generator.generate(event)
+
+    return web.json_response(await event_transformer.transform(event_info))
 
 
-async def get_my_events(request, event_mapper, event_transformer):
+async def get_my_events(request, event_mapper, event_transformer, event_info_generator):
     user = request['user']
 
     events = await event_mapper.find_events_with_user_participation(user)
 
-    return web.json_response(await event_transformer.transform_many_with_user_info(events, user))
+    events_info = await event_info_generator.generate_many(events)
+
+    return web.json_response(await event_transformer.transform(events_info))
 
 
-async def get_all_events(request, event_mapper, event_transformer):
+async def get_all_events(request, event_mapper, event_transformer, event_info_generator):
     user = request['user']
     events = await event_mapper.find_all()
     user_events_ids = [event.id for event in await event_mapper.find_events_with_user_participation(user)]
@@ -71,14 +77,14 @@ async def get_all_events(request, event_mapper, event_transformer):
         if event.id not in user_events_ids and datetime.utcnow().timestamp() < event.end_at.timestamp()
     ]
 
+    events_info = await event_info_generator.generate_many(events_without_user_participation_that_not_finished_yet)
+
     return web.json_response(
-        await event_transformer.transform_many_without_user_info(
-            events_without_user_participation_that_not_finished_yet
-        )
+        await event_transformer.transform(events_info)
     )
 
 
-async def join_to_event(request, event_mapper, participation_mapper, event_transformer):
+async def join_to_event(request, event_mapper, participation_mapper, event_transformer, event_info_generator):
     user = request['user']
     body = await request.json()
     event_id = request.match_info.get('event_id')
@@ -97,4 +103,6 @@ async def join_to_event(request, event_mapper, participation_mapper, event_trans
 
     await participation_mapper.create(participation)
 
-    return web.json_response(await event_transformer.transform_with_user_info(event, user))
+    event_info = await event_info_generator.generate(event)
+
+    return web.json_response(await event_transformer.transform(event_info))
