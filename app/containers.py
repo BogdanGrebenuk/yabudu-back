@@ -5,11 +5,15 @@ from dependency_injector.ext import aiohttp as ext_aiohttp
 
 from app.auth.containers import AuthPackageContainer
 from app.db import models
+from app.db.mappers.event import EventMapper
+from app.db.mappers.participation import ParticipationMapper
 from app.db.mappers.user import UserMapper
 from app.event.containers import EventPackageContainer
 from app.middlewares import error_handler, create_jwt_middleware, request_logger, additional_token_checker
 from app.user.containers import UserPackageContainer
 from app.user.domain import User
+from app.event.domain import Event
+from app.event.domain import Participation
 from app.utils.engine import init_engine
 from app.utils.executor import (
     Executor,
@@ -61,6 +65,20 @@ class MappersContainer(containers.DeclarativeContainer):
         engine=gateways.engine,
         model=models.User,
         entity_cls=User
+    )
+
+    event_mapper = providers.Singleton(
+        EventMapper,
+        engine=gateways.engine,
+        model=models.Event,
+        entity_cls=Event
+    )
+
+    participation_mapper = providers.Singleton(
+        ParticipationMapper,
+        engine=gateways.engine,
+        model=models.Participation,
+        entity_cls=Participation
     )
 
 
