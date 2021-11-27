@@ -68,7 +68,7 @@ async def get_my_events(request, event_mapper, event_transformer, event_info_gen
     return web.json_response(await event_transformer.transform(events_info))
 
 
-async def get_all_events(request, event_mapper, event_transformer, event_info_generator):
+async def get_all_events(request, event_mapper, event_transformer, event_info_generator, event_suggester):
     user = request['user']
     events = await event_mapper.find_all()
     user_events_ids = [event.id for event in await event_mapper.find_events_with_user_participation(user)]
@@ -79,7 +79,12 @@ async def get_all_events(request, event_mapper, event_transformer, event_info_ge
         if event.id not in user_events_ids and datetime.utcnow().timestamp() < event.end_at.timestamp()
     ]
 
-    events_info = await event_info_generator.generate_many(events_without_user_participation_that_not_finished_yet)
+    sorted_events_by_predicted_suggestion = await event_suggester.sort_events_by_suggested_interests(
+        user,
+        events_without_user_participation_that_not_finished_yet
+    )
+
+    events_info = await event_info_generator.generate_many(sorted_events_by_predicted_suggestion)
 
     return web.json_response(
         await event_transformer.transform(events_info)

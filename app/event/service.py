@@ -88,3 +88,29 @@ class EventInfoGenerator:
             self.generate(event)
             for event in events
         ])
+
+
+class EventSuggester:
+
+    async def sort_events_by_suggested_interests(self, user, events):
+        suggested_interests = (await self._make_api_call(user.interests)).get('suggestedInterests')
+        temp = {}
+        for event in events:
+            temp[event] = 0
+            for interest in event.interests:
+                if interest in suggested_interests:
+                    temp[event] += 1
+        return [
+            item[0]
+            for item in sorted(temp.items(), key=lambda item: item[1], reverse=True)
+        ]
+
+    async def _make_api_call(self, interests):
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                    'http://207.154.228.5:8000/api/predict-interests',
+                    data={
+                        'interests': interests
+                    }
+            ) as resp:
+                return await resp.json()
