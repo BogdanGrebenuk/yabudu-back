@@ -152,4 +152,5 @@ class ApplicationContainer(containers.DeclarativeContainer):
     event = providers.Container(
         EventPackageContainer,
         config=config,
+        mappers=mappers
     )
