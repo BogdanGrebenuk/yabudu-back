@@ -82,7 +82,7 @@ class EventInfoGenerator:
             ]
         }
 
-    def generate_many(self, events):
+    async def generate_many(self, events):
         return await gather(*[
             self.generate(event)
             for event in events
