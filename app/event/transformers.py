@@ -7,7 +7,7 @@ class EventTransformer(Transformer):
         return {
             "id": event.id,
             "name": event.name,
-            "description": event.name,
+            "description": event.description,
             "start_at": event.start_at.timestamp(),
             "end_at": event.end_at.timestamp(),
             "x": event.x,
