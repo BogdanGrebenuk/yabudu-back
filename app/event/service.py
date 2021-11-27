@@ -47,7 +47,7 @@ class EventInfoGenerator:
     def __init__(self, participation_mapper):
         self.participation_mapper = participation_mapper
 
-    def generate(self, event):
+    async def generate(self, event):
         organizer_info = await self.participation_mapper.get_event_organizer(event)
         other_participators_info = await self.participation_mapper.find_event_members(event)
 
