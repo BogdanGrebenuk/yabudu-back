@@ -170,7 +170,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
     event = providers.Container(
         EventPackageContainer,
         config=config,
-        mappers=mappers
+        mappers=mappers,
+        application_utils=application_utils,
     )
 
     chat = providers.Container(

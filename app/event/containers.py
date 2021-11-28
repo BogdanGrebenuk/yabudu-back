@@ -8,6 +8,8 @@ from app.event.transformers import EventTransformer
 
 class EventPackageContainer(containers.DeclarativeContainer):
 
+    application_utils = providers.DependenciesContainer()
+
     config = providers.Configuration()
 
     mappers = providers.DependenciesContainer()
@@ -33,6 +35,7 @@ class EventPackageContainer(containers.DeclarativeContainer):
 
     event_suggester = providers.Factory(
         EventSuggester,
+        logger=application_utils.logger
     )
 
     # controllers
