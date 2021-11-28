@@ -14,7 +14,7 @@ def setup_routes(app):
         'GET',  '/api/users/me', container.user.get_user_me.as_view()
     )
     app.router.add_route(
-        'GET', '/api/events/global', container.event.get_global_events.as_view()
+        'GET', '/api/exclusive-events', container.event.get_global_events.as_view()
     )
     app.router.add_route(
         'POST', '/api/events', container.event.create_event.as_view()
