@@ -18,7 +18,7 @@ class GlobalEventsFinder:
     async def _make_api_call(self):
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                    self._tm_api_url,
+                    self._tm_api_url + '?size=5',
                     params={
                         'apikey': self._tm_api_key
                     }
@@ -35,9 +35,9 @@ class GlobalEventsFinder:
             temp.append({
                 'name': event_data.get('name'),
                 'url': event_data.get('url'),
-                # 'start_at': event_data.get('dates', {}).get('dateTime'),
-                # 'city': event_data.get('_embedded', {}).get('venues', {}).get('city', {}).get('name'),
-                # 'country': event_data.get('_embedded', {}).get('venues', {}).get('country', {}).get('name')
+                'startAt': event_data.get('dates', {}).get('start', {}).get('dateTime'),
+                'city': event_data.get('_embedded', {}).get('venues', [{}])[0].get('city', {}).get('name'),
+                'country': event_data.get('_embedded', {}).get('venues', [{}])[0].get('country', {}).get('name'),
             })
 
         return temp
