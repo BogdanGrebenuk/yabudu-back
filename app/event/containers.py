@@ -30,7 +30,8 @@ class EventPackageContainer(containers.DeclarativeContainer):
     event_info_generator = providers.Factory(
         EventInfoGenerator,
         participation_mapper=mappers.participation_mapper,
-        feedback_mapper=mappers.feedback_mapper
+        feedback_mapper=mappers.feedback_mapper,
+        user_mapper=mappers.user_mapper
     )
 
     event_suggester = providers.Factory(
