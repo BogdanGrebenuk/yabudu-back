@@ -59,7 +59,13 @@ class EventInfoGenerator:
                 {
                     "image": feedback.image,
                     "text": feedback.text,
-                    "userId": feedback.user_id
+                    "userId": feedback.user_id,
+                    "username": (
+                        organizer_info.username
+                        if organizer_info.id == feedback.user_id
+                        else
+                            [p.username for p in other_participators_info if p.user_id == feedback.user_id][0]
+                    )
                 }
                 for feedback in raw_feedbacks
             ]
