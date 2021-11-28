@@ -94,15 +94,20 @@ class EventSuggester:
 
     async def sort_events_by_suggested_interests(self, user, events):
         suggested_interests = (await self._make_api_call(user.interests)).get('suggestedInterests')
+        event_map = {event.id: event for event in events}
         temp = {}
         for event in events:
-            temp[event] = 0
+            temp[event.id] = 0
             for interest in event.interests:
                 if interest in suggested_interests:
-                    temp[event] += 1
-        return [
+                    temp[event.id] += 1
+        temp = [
             item[0]
             for item in sorted(temp.items(), key=lambda item: item[1], reverse=True)
+        ]
+        return [
+            event_map[event_id]
+            for event_id in temp
         ]
 
     async def _make_api_call(self, interests):
