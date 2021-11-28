@@ -121,6 +121,9 @@ async def leave_event(request, participation_mapper):
 
     participation = await participation_mapper.find_one_by(event_id=event_id, user_id=user.id)
 
+    if participation.role:
+        raise DomainException('You an organizer, you cannot leave the event.')
+
     await participation_mapper.delete(participation)
 
     return web.json_response({}, status=200)
