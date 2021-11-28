@@ -45,16 +45,16 @@ class GlobalEventsFinder:
 
 class EventInfoGenerator:
 
-    def __init__(self, participation_mapper, feedbacks_mapper):
+    def __init__(self, participation_mapper, feedback_mapper):
         self.participation_mapper = participation_mapper
-        self.feedbacks_mapper = feedbacks_mapper
+        self.feedback_mapper = feedback_mapper
 
     async def generate(self, event):
         organizer_info = await self.participation_mapper.get_event_organizer(event)
         other_participators_info = await self.participation_mapper.find_event_members(event)
 
         if datetime.utcnow().timestamp() > event.end_at.timestamp():
-            raw_feedbacks = await self.feedbacks_mapper.find_by(event_id=event.id)
+            raw_feedbacks = await self.feedback_mapper.find_by(event_id=event.id)
             feedbacks = [
                 {
                     "image": feedback.image,

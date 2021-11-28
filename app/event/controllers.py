@@ -115,6 +115,17 @@ async def join_to_event(request, event_mapper, participation_mapper, event_trans
     return web.json_response(await event_transformer.transform(event_info))
 
 
+async def leave_event(request, participation_mapper):
+    user = request['user']
+    event_id = request.match_info.get('event_id')
+
+    participation = await participation_mapper.find_one_by(event_id=event_id, user_id=user.id)
+
+    await participation_mapper.delete(participation)
+
+    return web.json_response({}, status=200)
+
+
 async def create_feedback(request, feedback_mapper, event_transformer):
     user = request['user']
     event_id = request.match_info.get('event_id')

@@ -1,9 +1,7 @@
 from dependency_injector import containers, providers
 from dependency_injector.ext import aiohttp as ext_aiohttp
 
-from app.event.controllers import get_global_events, create_event, get_event, join_to_event, get_my_events, get_all_events, create_feedback
-from app.event.service import GlobalEventsFinder, EventInfoGenerator
-from app.event.controllers import get_global_events, create_event, get_event, join_to_event, get_my_events, get_all_events
+from app.event.controllers import get_global_events, create_event, get_event, join_to_event, get_my_events, get_all_events, create_feedback, leave_event
 from app.event.service import GlobalEventsFinder, EventInfoGenerator, EventSuggester
 from app.event.transformers import EventTransformer
 
@@ -65,6 +63,11 @@ class EventPackageContainer(containers.DeclarativeContainer):
         participation_mapper=mappers.participation_mapper,
         event_transformer=event_transformer,
         event_info_generator=event_info_generator
+    )
+
+    leave_event = ext_aiohttp.View(
+        leave_event,
+        participation_mapper=mappers.participation_mapper,
     )
 
     get_my_events = ext_aiohttp.View(
