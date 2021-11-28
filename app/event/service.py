@@ -109,7 +109,7 @@ class EventSuggester:
         async with aiohttp.ClientSession() as session:
             async with session.post(
                     'http://207.154.228.5:8000/api/predict-interests',
-                    data={
+                    json={
                         'interests': interests
                     }
             ) as resp:
