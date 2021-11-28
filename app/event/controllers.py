@@ -114,6 +114,7 @@ async def join_to_event(request, event_mapper, participation_mapper, event_trans
 
     return web.json_response(await event_transformer.transform(event_info))
 
+
 async def create_feedback(request, feedback_mapper, event_transformer):
     user = request['user']
     event_id = request.match_info.get('event_id')
