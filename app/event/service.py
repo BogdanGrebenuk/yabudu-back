@@ -1,4 +1,5 @@
 from asyncio import gather
+from datetime import datetime
 
 import aiohttp
 
@@ -57,6 +58,7 @@ class EventInfoGenerator:
             "description": event.name,
             "startAt": event.start_at.timestamp(),
             "endAt": event.end_at.timestamp(),
+            "isOver": datetime.utcnow().timestamp() > event.end_at.timestamp(),
             "x": event.x,
             "y": event.y,
             "address": event.address,
