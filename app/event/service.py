@@ -122,14 +122,14 @@ class EventSuggester:
                 for interest in event.interests:
                     if interest in suggested_interests:
                         temp[event.id] += 1
-            temp = [
+            event_ids = [
                 item[0]
                 for item in sorted(temp.items(), key=lambda item: item[1], reverse=True)
             ]
-            self.logger.info(f"Prediction successfully made: {suggested_interests}, {temp}")
+            self.logger.info(f"Prediction successfully made: {suggested_interests}, {temp}, {event_ids}")
             return [
                 event_map[event_id]
-                for event_id in temp
+                for event_id in event_ids
             ]
         except Exception as e:
             self.logger.exception(e)
